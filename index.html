@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mataruna Team Judo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.5/cdn.min.js" defer></script>
+    <style>
+        .technique-card {
+            transition: transform 0.3s ease;
+        }
+        .technique-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100" x-data="{ 
+    activeTab: 'tachiwaza',
+    activeTachiCategory: 'tewaza',
+    activeNewazaCategory: 'osaekomi',
+    showModal: false,
+    isAdmin: false,
+    techniques: {
+        tewaza: [
+            { id: 1, name: 'Ippon-seoi-nage', translation: 'One-arm shoulder throw', image: './images/technique_images/Ippon-seoi-nage.jpg', link: 'https://www.youtube.com/watch?v=FQnOlCxo4oI' },
+            { id: 2, name: 'Seoi-nage', translation: 'Shoulder throw', image: './images/technique_images/Moroteseoinage.jpg', link: 'https://www.youtube.com/watch?v=zIq0xI0ogxk' },
+            { id: 3, name: 'Tai-otoshi', translation: 'Body drop', image: './images/technique_images/Tai-otoshi.jpg', link: 'https://www.youtube.com/watch?v=4x6S3Q-Ktv8' },
+            { id: 4, name: 'Kata-guruma', translation: 'Shoulder wheel', image: './images/technique_images/Kata-guruma.jpeg', link: 'https://www.youtube.com/watch?v=cnHRhSy8yi4' },
+            { id: 5, name: 'Sumi-otoshi', translation: 'Corner drop', image: './images/technique_images/Sumi-otoshi.jpg', link: 'https://www.youtube.com/watch?v=lLU9wv52ni0'  },
+            { id: 6, name: 'Kibisu-gaeshi', translation: 'Heel trip', image: './images/technique_images/Kibisu-gaeshi.jpg', link: 'https://www.youtube.com/watch?v=tJylJYfBliA'  },
+            { id: 7, name: 'Obi-otoshi', translation: 'Belt drop', image: './images/technique_images/Obi-otoshi.jpg', link: 'https://www.youtube.com/watch?v=ff8U2TVZIYI'  },
+            { id: 8, name: 'Kuchiki-taoshi', translation: 'Dead tree drop', image: './images/technique_images/Kuchiki-taoshi.jpg', link: 'https://www.youtube.com/watch?v=ZNL47q1aJNY'  },
+            { id: 9, name: 'Yama-arashi', translation: 'Mountain storm', image: './images/technique_images/Yama-arashi.jpg', link: 'https://www.youtube.com/watch?v=MGlyKmSuzdc'  }
+        ],
+        koshiwaza: [
+            { id: 1, name: 'O-goshi', translation: 'Major hip throw', image: './images/technique_images/O-goshi.jpg', link: 'https://www.youtube.com/watch?v=yhu1mfy2vJ4'  },
+            { id: 2, name: 'Koshi-guruma', translation: 'Hip wheel', image: './images/technique_images/Koshi-guruma.jpg', link: 'https://www.youtube.com/watch?v=SU7Id6uVJ44'  },
+            { id: 3, name: 'Uki-goshi', translation: 'Floating hip throw', image: './images/technique_images/Uki-goshi.jpg', link: 'https://www.youtube.com/watch?v=bPKwtB4lyOQ'  },
+            { id: 4, name: 'Harai-goshi', translation: 'Sweeping hip throw', image: './images/technique_images/Harai-goshi.jpg', link: 'https://www.youtube.com/watch?v=qTo8HlAAkOo'  },
+            { id: 5, name: 'Tsuri-goshi', translation: 'Lifting hip throw', image: './images/technique_images/Tsuri-goshi.jpg', link: 'https://www.youtube.com/watch?v=51Htlp7xEvE'  },
+            { id: 6, name: 'Tsuri-komi-goshi', translation: 'Lifting and pulling hip throw', image: './images/technique_images/Tsuri-komi-goshi.jpg', link: 'https://www.youtube.com/watch?v=McfzA0yRVt4'  },
+            { id: 7, name: 'Hane-goshi', translation: 'Spring hip throw', image: './images/technique_images/Hane-goshi.jpg', link: 'https://www.youtube.com/watch?v=M9_7De6A1kk'  }
+        ],
+        ashiwaza: [
+            { id: 1, name: 'De-ashi-harai', translation: 'Advanced foot sweep', image: './images/technique_images/De-ashi-harai.jpg', link: 'https://www.youtube.com/watch?v=4BUUvqxi_Kk'  },
+            { id: 2, name: 'Okuri-ashi-harai', translation: 'Sliding foot sweep', image: './images/technique_images/Okuri-ashi-harai.jpg', link: 'https://www.youtube.com/watch?v=nw1ZdRjrdRI'  },
+            { id: 3, name: 'Sasae-tsurikomi-ashi', translation: 'Propping and drawing ankle throw', image: './images/technique_images/Sasae-tsurikomi-ashi.jpg', link: 'https://www.youtube.com/watch?v=699i--pvYmE'  },
+            { id: 4, name: 'Uchi-mata', translation: 'Inner thigh throw', image: './images/technique_images/Uchi-mata.jpg', link: 'https://www.youtube.com/watch?v=iUpSu5J-bgw'  },
+            { id: 5, name: 'Ko-soto-gari', translation: 'Minor outer reap', image: './images/technique_images/Ko-soto-gari.jpg', link: 'https://www.youtube.com/watch?v=jeQ541ScLB4'  },
+            { id: 6, name: 'Ko-uchi-gari', translation: 'Minor inner reap', image: './images/technique_images/Ko-uchi-gari.jpg', link: 'https://www.youtube.com/watch?v=3Jb3tZvr9Ng'  },
+            { id: 7, name: 'O-soto-gari', translation: 'Major outer reap', image: './images/technique_images/O-soto-gari.jpg', link: 'https://www.youtube.com/watch?v=c-A_nP7mKAc'  },
+            { id: 8, name: 'O-uchi-gari', translation: 'Major inner reap', image: './images/technique_images/O-uchi-gari.jpg', link: 'https://www.youtube.com/watch?v=0itJFhV9pDQ'  },
+            { id: 9, name: 'Ashi-guruma', translation: 'Leg wheel', image: './images/technique_images/Ashi-guruma.jpg', link: 'https://www.youtube.com/watch?v=ROeayhvom9U'  },
+            { id: 10, name: 'Hiza-guruma', translation: 'Knee wheel', image: './images/technique_images/Hiza-guruma.jpg', link: 'https://www.youtube.com/watch?v=JPJx9-oAVns'  }
+        ],
+        masutemi: [
+            { id: 1, name: 'Tani-otoshi', translation: 'Valley drop', image: './images/technique_images/Tani-otoshi.jpg', link: 'https://www.youtube.com/watch?v=3b9Me3Fohpk'  },
+            { id: 2, name: 'Sumi-gaeshi', translation: 'Corner reversal', image: './images/technique_images/Sumi-gaeshi.jpg', link: 'https://www.youtube.com/watch?v=5VhduA5xkbA'  },
+            { id: 3, name: 'Hikikomi-gaeshi', translation: 'Pulling-in reversal', image: './images/technique_images/Hikikomi-gaeshi.jpg', link: 'https://www.youtube.com/watch?v=92zUYWBp5N8'  },
+            { id: 4, name: 'Ura-nage', translation: 'Rear throw', image: './images/technique_images/Ura-nage.jpg', link: 'https://www.youtube.com/watch?v=Fgi9b8DJ5sQ'  },
+            { id: 5, name: 'Tomoe-nage', translation: 'Stomach throw', image: './images/technique_images/Tomoe-nage.jpg', link: 'https://www.youtube.com/watch?v=880WbHvHv6A'  }
+        ],
+        yokosutemi: [
+            { id: 1, name: 'Yoko-otoshi', translation: 'Side drop', image: './images/technique_images/Yoko-otoshi.jpg', link: 'https://www.youtube.com/watch?v=MnNG67pF_a0'  },
+            { id: 2, name: 'Yoko-gake', translation: 'Side hook', image: './images/technique_images/Yoko-gake.jpg', link: 'https://www.youtube.com/watch?v=tP1Sj1uDfSo'  },
+            { id: 3, name: 'Yoko-guruma', translation: 'Side wheel', image: './images/technique_images/Yoko-guruma.jpg', link: 'https://www.youtube.com/watch?v=MehP6I5cY2c'  },
+            { id: 4, name: 'Yoko-wakare', translation: 'Side separation', image: './images/technique_images/Yoko-wakare.jpg', link: 'https://www.youtube.com/watch?v=bp1tscHlePI'  },
+            { id: 5, name: 'Tawara-gaeshi', translation: 'Rice-bale reversal', image: './images/technique_images/Tawara-gaeshi.jpg', link: 'https://www.youtube.com/watch?v=TmTWgrmViZc'  }
+        ],
+        osaekomi: [
+            { id: 1, name: 'Kesa-gatame', translation: 'Scarf hold', image: './images/technique_images/Kesa-gatame.jpg', link: 'https://www.youtube.com/watch?v=NDaQuJOFBYk'  },
+            { id: 2, name: 'Kuzure-kesa-gatame', translation: 'Modified scarf hold', image: './images/technique_images/Kuzure-kami-shiho-gatame.jpg', link: 'https://www.youtube.com/watch?v=Q2fb9jaoUFQ'  },
+            { id: 3, name: 'Kata-gatame', translation: 'Shoulder hold', image: './images/technique_images/Kata-gatame.jpg', link: 'https://www.youtube.com/watch?v=zQR3IOXxO_Q'  },
+            { id: 4, name: 'Kami-shiho-gatame', translation: 'Upper four-corner hold', image: './images/technique_images/Kami-shiho-gatame.jpg', link: 'https://www.youtube.com/watch?v=HFuMjOv0WN8'  },
+            { id: 5, name: 'Kuzure-kami-shiho-gatame', translation: 'Modified upper four-corner hold', image: './images/technique_images/Kuzure-kami-shiho-gatame.jpg', link: 'https://www.youtube.com/watch?v=YUrogQWdwiY'  },
+            { id: 6, name: 'Yoko-shiho-gatame', translation: 'Side four-corner hold', image: './images/technique_images/Yoko-shiho-gatame.jpg', link: 'https://www.youtube.com/watch?v=TT7XJVSEQxA'  },
+            { id: 7, name: 'Tate-shiho-gatame', translation: 'Vertical four-corner hold', image: './images/technique_images/Tate-shiho-gatame.jpg', link: 'https://www.youtube.com/watch?v=55-rFmBx53g'  }
+        ],
+        shimewaza: [
+            { id: 1, name: 'Hadaka-jime', translation: 'Naked strangle', image: './images/technique_images/Hadaka-jime.jpg', link: 'https://www.youtube.com/watch?v=9f0n8jez7iA'  },
+            { id: 2, name: 'Okuri-eri-jime', translation: 'Sliding collar strangle', image: './images/technique_images/Okuri-eri-jime.jpg', link: 'https://www.youtube.com/watch?v=EiqyoVcIAi8'  },
+            { id: 3, name: 'Kata-juji-jime', translation: 'Single cross strangle', image: './images/technique_images/Kata-juji-jime.jpg', link: 'https://www.youtube.com/watch?v=3VZVUAmiMD8'  },
+            { id: 4, name: 'Gyaku-juji-jime', translation: 'Reverse cross strangle', image: './images/technique_images/Gyaku-juji-jime.jpg', link: 'https://www.youtube.com/watch?v=t3tQriIPdlI'  },
+            { id: 5, name: 'Nami-juji-jime', translation: 'Normal cross strangle', image: './images/technique_images/Nami-juji-jime.jpg', link: 'https://www.youtube.com/watch?v=k2cHry9HByQ'  },
+            { id: 6, name: 'Kataha-jime', translation: 'Single wing strangle', image: './images/technique_images/Kataha-jime.jpg', link: 'https://www.youtube.com/watch?v=yaTGgRjnwB8'  },
+            { id: 7, name: 'Sode-guruma-jime', translation: 'Sleeve wheel strangle', image: './images/technique_images/Sode-guruma-jime.jpg', link: 'https://www.youtube.com/watch?v=E3nvQzClcAU'  }
+        ],
+        kansetsuwaza: [
+            { id: 1, name: 'Ude-garami', translation: 'Entangled arm lock', image: './images/technique_images/Ude-garami.jpg', link: 'https://www.youtube.com/watch?v=AIlTvZb4RlE'  },
+            { id: 2, name: 'Ude-hishigi-juji-gatame', translation: 'Cross arm lock (armbar)', image: './images/technique_images/Ude-hishigi-juji-gatame.jpg', link: 'https://www.youtube.com/watch?v=OWgSOlCuMXw'  },
+            { id: 3, name: 'Ude-hishigi-ude-gatame', translation: 'Arm lock against the elbow', image: './images/technique_images/Ude-hishigi-ude-gatame.jpg', link: 'https://www.youtube.com/watch?v=SBf0aTma1VI'  },
+            { id: 4, name: 'Ude-hishigi-hiza-gatame', translation: 'Knee arm lock', image: './images/technique_images/Ude-hishigi-hiza-gatame.jpg', link: 'https://www.youtube.com/watch?v=H2HtAJdiJcE'  },
+            { id: 5, name: 'Ude-hishigi-waki-gatame', translation: 'Armpit arm lock', image: './images/technique_images/Ude-hishigi-waki-gatame.jpg', link: 'https://www.youtube.com/watch?v=8F5p1zuJRG0'  }
+        ]
+    }
+}">
+    <!-- Header -->
+    <header class="bg-white text-gray-900 shadow-lg">
+        <div class="container mx-auto px-4 py-6 flex flex-col items-center">
+            <div class="flex justify-center w-full mb-4">
+                <img src="./images/technique_images/Mataruna logo.png" alt="logo" class="w-24 h-24">
+            </div>
+            <h1 class="text-4xl font-bold">Mataruna Team Judo</h1>
+            <p class="mt-2">Black Belt Examination Techniques</p>
+        </div>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="bg-white shadow-md mt-4">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center space-x-4">
+                <button 
+                    @click="activeTab = 'tachiwaza'" 
+                    :class="{'text-blue-600 border-b-2 border-blue-600': activeTab === 'tachiwaza'}"
+                    class="px-4 py-2 font-semibold">
+                    Tachi-Waza (Standing Techniques)
+                </button>
+                <button 
+                    @click="activeTab = 'newaza'" 
+                    :class="{'text-blue-600 border-b-2 border-blue-600': activeTab === 'newaza'}"
+                    class="px-4 py-2 font-semibold">
+                    Ne-waza (Ground Techniques)
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Tachi-waza Section -->
+        <div x-show="activeTab === 'tachiwaza'" class="space-y-8">
+            <!-- Tachi-waza Categories -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button 
+                    @click="activeTachiCategory = 'tewaza'"
+                    :class="{'bg-blue-600 text-white': activeTachiCategory === 'tewaza'}"
+                    class="px-4 py-2 rounded-full bg-gray-200 hover:bg-blue-500 hover:text-white transition">
+                    Te-waza (Hand Techniques)
+                </button>
+                <button 
+                    @click="activeTachiCategory = 'koshiwaza'"
+                    :class="{'bg-blue-600 text-white': activeTachiCategory === 'koshiwaza'}"
+                    class="px-4 py-2 rounded-full bg-gray-200 hover:bg-blue-500 hover:text-white transition">
+                    Koshi-waza (Hip Techniques)
+                </button>
+                <button 
+                    @click="activeTachiCategory = 'ashiwaza'"
+                    :class="{'bg-blue-600 text-white': activeTachiCategory === 'ashiwaza'}"
+                    class="px-4 py-2 rounded-full bg-gray-200 hover:bg-blue-500 hover:text-white transition">
+                    Ashi-waza (Foot/Leg Techniques)
+                </button>
+                <button 
+                    @click="activeTachiCategory = 'masutemi'"
+                    :class="{'bg-blue-600 text-white': activeTachiCategory === 'masutemi'}"
+                    class="px-4 py-2 rounded-full bg-gray-200 hover:bg-blue-500 hover:text-white transition">
+                    Ma-sutemi-waza (Rear Sacrifice Techniques)
+                </button>
+                <button 
+                    @click="activeTachiCategory = 'yokosutemi'"
+                    :class="{'bg-blue-600 text-white': activeTachiCategory === 'yokosutemi'}"
+                    class="px-4 py-2 rounded-full bg-gray-200 hover:bg-blue-500 hover:text-white transition">
+                    Yoko-sutemi-waza (Side Sacrifice Techniques)
+                </button>
+            </div>
+
+            <!-- Techniques Grid -->
+<template x-for="category in ['tewaza', 'koshiwaza', 'ashiwaza', 'masutemi', 'yokosutemi']">
+    <div x-show="activeTachiCategory === category" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <template x-for="technique in techniques[category]" :key="technique.id">
+            <div class="technique-card bg-gray-50 rounded-lg shadow-md overflow-hidden">
+                <div class="relative aspect-square">
+                    <img :src="technique.image" 
+                         :alt="technique.name" 
+                         class="w-full h-full object-cover">
+                    <!-- Admin Upload Control -->
+                    <div x-show="isAdmin" class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                        <label class="cursor-pointer text-white text-center p-4">
+                            <span class="block mb-2">Click to upload image</span>
+                            <input type="file" class="hidden" accept="image/*" @change="technique.image = URL.createObjectURL($event.target.files[0])">
+                        </label>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-xl font-semibold" x-text="technique.name"></h3>
+                    <p class="text-gray-600" x-text="technique.translation"></p>
+                    <a :href="technique.link" 
+       class="inline-block mt-2 text-blue-600 hover:text-blue-800 hover:underline"
+       target="_blank">
+        Learn More →
+    </a>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>
+</div>
+        <!-- Ne-waza Section -->
+        <div x-show="activeTab === 'newaza'" class="space-y-8">
+            <!-- Ne-waza Categories -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button 
+                    @click="activeNewazaCategory = 'osaekomi'"
+                    :class="{'bg-blue-600 text-white': activeNewazaCategory === 'osaekomi'}"
+                    class="px-4 py-2 rounded-full bg-gray-200 hover:bg-blue-500 hover:text-white transition">
+                    Osaekomi-waza (Hold-down Techniques)
+                </button>
+                <button 
+                    @click="activeNewazaCategory = 'shimewaza'"
+                    :class="{'bg-blue-600 text-white': activeNewazaCategory === 'shimewaza'}"
+                    class="px-4 py-2 rounded-full bg-gray-200 hover:bg-blue-500 hover:text-white transition">
+                    Shime-waza (Strangle Techniques)
+                </button>
+                <button 
+                    @click="activeNewazaCategory = 'kansetsuwaza'"
+                    :class="{'bg-blue-600 text-white': activeNewazaCategory === 'kansetsuwaza'}"
+                    class="px-4 py-2 rounded-full bg-gray-200 hover:bg-blue-500 hover:text-white transition">
+                    Kansetsu-waza (Joint Lock Techniques)
+                </button>
+            </div>
+
+            <!-- Techniques Grid -->
+            <template x-for="category in ['osaekomi', 'shimewaza', 'kansetsuwaza']">
+                <div x-show="activeNewazaCategory === category" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                    <template x-for="technique in techniques[category]" :key="technique.id">
+                        <div class="technique-card bg-gray-50 rounded-lg shadow-md overflow-hidden">
+                            <div class="relative aspect-square">
+                                <img :src="technique.image" 
+                                     :alt="technique.name" 
+                                     class="w-full h-full object-cover">
+                                <div x-show="isAdmin" class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                    <label class="cursor-pointer text-white text-center p-4">
+                                        <span class="block mb-2">Click to upload image</span>
+                                        <input type="file" class="hidden" accept="image/*" @change="technique.image = URL.createObjectURL($event.target.files[0])">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="text-xl font-semibold" x-text="technique.name"></h3>
+                                <p class="text-gray-600" x-text="technique.translation"></p>
+                                <a :href="technique.link" 
+       class="inline-block mt-2 text-blue-600 hover:text-blue-800 hover:underline"
+       target="_blank">
+        Learn More →
+    </a>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white text-gray-900 mt-12 shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <p class="text-center">© 2024 Mataruna Team Judo. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
